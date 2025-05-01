@@ -1,49 +1,61 @@
 package com.jobbees.controller;
 
-import com.jobbees.dto.loginRequest;
+
+import com.jobbees.dto.AdminDto;
+import com.jobbees.dto.LoginRequest;
 import com.jobbees.entities.Admin;
 import com.jobbees.services.AdminService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/admin")
+@RequestMapping("/admin") // base URL
+
 public class AdminController {
 
-    //Injecting the AdminService so we can use its methods
-    @Autowired
+    @Autowired //service injection
     private AdminService adminService;
 
-    //1. API to register a new admin
-    @PostMapping("/register")
-    public ResponseEntity<Admin> registerAdmin(@RequestBody Admin admin){
-
-        // call the service to save the admin
-        Admin savedAdmin= adminService.saveAdmin(admin);
-
-        // return a response with the saved admin and status 200 ok
-        return new ResponseEntity<>(savedAdmin, HttpStatus.CREATED);
+    //saving admin
+    @PostMapping("/saveEntity")
+    public Admin saveAdmin(@RequestBody Admin admin){
+        return adminService.saveAdmin(admin);
+    }
+    @PostMapping("/saveDto")
+    public Admin saveAdmin(@RequestBody @Valid AdminDto adminDto){
+        return adminService.saveAdmin(adminDto);
     }
 
-    //2. Api to login an admin
+    @PostMapping("/register")
+    public ResponseEntity<Admin> register(@RequestBody Admin admin){
+        Admin saveAdmin=adminService.register(admin);
+        return new ResponseEntity<>(saveAdmin, HttpStatus.CREATED);
+    }
+
     @PostMapping("/login")
-    public ResponseEntity<String> loginAdmin(@RequestBody loginRequest loginRequest){
+    public ResponseEntity<String> loginAdmin(@RequestBody LoginRequest loginRequest){
+        boolean isAuthenticated = adminService.loginAdmin(loginRequest);
 
-        // check if login is valid
-        boolean isValid = adminService.validateAdmin(loginRequest.getEmail(), loginRequest.getPassword());
-
-        if (isValid){
-            return ResponseEntity.ok("Login Successful!");
-        }else{
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
-
+        if(isAuthenticated){
+            return ResponseEntity.ok("Login Successful");
+        }
+        else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid Credentials");
         }
     }
+
+    //getting/retriving data of admin from DB using email
+    @GetMapping("/getByEmail/{email}")
+    public Admin findByEmail(@PathVariable String email){
+        return adminService.findByEmail(email);
+    }
+    @GetMapping("/getByName/{name}")
+    public Admin findByName(@PathVariable String name){
+        return adminService.findByName(name);
+    }
+
 
 }

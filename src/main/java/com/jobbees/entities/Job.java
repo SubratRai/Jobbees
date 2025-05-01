@@ -15,20 +15,20 @@ public class Job {
     private String jobType;
     private String jobLocation;
     private String jobInfo;
-    private String companey;
+    private String company;
 
     // no args constructor
     public Job (){}
 
     // all args constructor
-    public Job(Long id, String jobName, String jobTitle, String jobType, String jobLocation, String jobInfo, String companey){
+    public Job(Long id, String jobName, String jobTitle, String jobType, String jobLocation, String jobInfo, String company){
          this.id=id;
          this.jobName=jobName;
          this.jobTitle=jobTitle;
          this.jobType =jobType;
          this.jobLocation=jobLocation;
          this.jobInfo=jobInfo;
-         this.companey=companey;
+         this.company=company;
     }
 
     public Long getId(){
@@ -55,8 +55,8 @@ public class Job {
         return jobInfo;
     }
 
-    public String getCompaney() {
-        return companey;
+    public String getCompany() {
+        return company;
     }
 
     public void setId(Long id) {
@@ -81,7 +81,7 @@ public class Job {
         this.jobInfo = jobInfo;
     }
 
-    public void setCompaney(String companey) {
-        this.companey = companey;
+    public void setCompany(String company) {
+        this.company = company;
     }
 }
